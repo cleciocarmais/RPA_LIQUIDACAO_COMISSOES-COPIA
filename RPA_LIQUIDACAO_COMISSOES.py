@@ -20,10 +20,11 @@ with open('C:/RPA/Credenciais/pid_bot_running.txt', 'w') as file:
     file.write(str(os.getpid())) # sobrescrevendo o numero do PID
 
     
-with open(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES - Copia\log_RPA_LIQUIDACAO_COMISSOES.txt', 'w') as f:
+with open(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', 'w') as f:
         pass
 
-logging.basicConfig(filename=r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES - Copia\log_RPA_LIQUIDACAO_COMISSOES.txt', level=logging.INFO, format=' %(asctime)s - %(levelname)s - %(message)s',
+
+logging.basicConfig(filename=r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', level=logging.INFO, format=' %(asctime)s - %(levelname)s - %(message)s',
         datefmt='%d/%m/%Y %I:%M:%S %p')
 
 CHAVE_ACESSO = 'C:/RPA/Credenciais/service_account.json'
