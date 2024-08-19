@@ -109,7 +109,7 @@ try:
                                     #  p.alert('EMPRSA IGUAIS E TITULO ENCONTRADO')
 
                                     if index == 0:
-                                        p.alert('alterar flag')
+                                        
                                         flag = 0
                                     resultado_liquidaca_plus_bancario = realizaLiquidacao_plus_bancario(cliente,flag)
                             

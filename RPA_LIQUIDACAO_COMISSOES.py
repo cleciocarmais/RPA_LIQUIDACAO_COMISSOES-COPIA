@@ -5,6 +5,7 @@ import gspread
 import pandas as pd
 import gspread_dataframe as gd
 import os
+2390603
 
 
 from src.Controller.controller_plus_bancario import run_plus_bancario
@@ -23,7 +24,7 @@ with open('C:/RPA/Credenciais/pid_bot_running.txt', 'w') as file:
 with open(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', 'w') as f:
         pass
 
-
+ 
 logging.basicConfig(filename=r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', level=logging.INFO, format=' %(asctime)s - %(levelname)s - %(message)s',
         datefmt='%d/%m/%Y %I:%M:%S %p')
 
@@ -35,11 +36,15 @@ sh = gs.open('Nota Fiscal - Comissão Financiamento (respostas)')
 work = sh.worksheet('Respostas ao formulário 2')
 df = pd.DataFrame(work.get_all_records())
 print('Dados baixados')
-logging.info('Dados baixados')
 
+logging.info('Dados baixados')
+# df = df = df.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
 
 lista_qtde_clientes = [str(x) for x in df['Quantidade de Clientes']]
 lista_empresa_fandi = [str(x) for x in df['Empresa Fandi']]
+listas_de_cpf_cnpj = [str(x) for x in df['CPF/CNPJ']]
+
+
 
 
 for linha in range(len(df.index)):
@@ -47,7 +52,7 @@ for linha in range(len(df.index)):
         print(f"PROCESSANDO LINHA N° {linha}")
         logging.info(f"PROCESSANDO LINHA N° {linha}")
         if df['Tipo de Bonificação'][linha] == '[Semanal] Plus Bancário - Retorno':
-            result = run_plus_bancario(df,linha,lista_qtde_clientes[linha],lista_empresa_fandi[linha])
+            result = run_plus_bancario(df,linha,lista_qtde_clientes[linha],lista_empresa_fandi[linha],listas_de_cpf_cnpj[linha])
             if result:
                     print("ATUALIZANDO PLANILHA")
                     logging.info("ATUALIZANDO PLANILHA")
@@ -68,7 +73,7 @@ for linha in range(len(df.index)):
             print('\n\n')
                  
         elif df['Tipo de Bonificação'][linha] == 'Comissão SPF':
-            result_spf =  run_comissao_Spf(df,linha,lista_qtde_clientes[linha],lista_empresa_fandi[linha])
+            result_spf =  run_comissao_Spf(df,linha,lista_qtde_clientes[linha],lista_empresa_fandi[linha],listas_de_cpf_cnpj[linha])
             if result_spf:
                 print("ATUALIZANDO PLANILHA")
                 logging.info("ATUALIZANDO PLANILHA")

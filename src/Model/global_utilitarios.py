@@ -54,6 +54,56 @@ def escreva(text):
         return f'<b style="color: red;">{text}</b>'
     else:
         return f'<b style="color: green;">{text}</b>'
+def formatando_cpfs_cpns(dados):
+    tratamento_string = dados.replace(".","").replace("-","").replace("/","")
+    return tratamento_string
+def estilo_lista(lista):
+    header_html = '''
+
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Document</title>
+                        <style>
+                            *{
+                                margin: 0;
+                                padding : 0;
+                            }
+                            ul{
+                                list-style: none;
+                                height: 200px;
+                                width: 560px;
+                                padding: 50px;
+                            
+                                margin-bottom: 10px;
+                             
+                                border-radius: 5px;
+                                box-shadow: 6px 0px 10px 0px rgb(177, 174, 174);
+                                border: 1px solid black;
+                            }
+                         
+                            li{
+                                font-size: 18px;
+                                margin-bottom : 2px;
+                            }
+                         </style>
+                       
+                    </head>
+                 
+                        '''
+    body_html = f'''
+
+
+        <body>
+       
+            {lista}
+       
+        </body>
+'''
+    return header_html + body_html
+
         
 
 

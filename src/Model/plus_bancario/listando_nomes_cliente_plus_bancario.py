@@ -1,7 +1,9 @@
 import pandas as pd
 import pyautogui as p
 import logging
-def listando_clientes_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi):
+from src.Model.global_utilitarios import formatando_cpfs_cpns
+def listando_clientes_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
+    
     """
         PEGA OS NOME E EMPRESA FANDI DE CADA CLIENTE SALVA 
         DENTRO DE  ARRAY DICIONARIO. RETORNO UM ARRAY DE DICIONARIO\n
@@ -34,6 +36,7 @@ def listando_clientes_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_f
         # Criando list_comprehensions para os clientes que existem
         nome_cliente = [str(x) for x in df[f'Nome do Cliente {j}']][index]
         valor_cliente = [str(x) for x in df[f'Valor {j}']][index]
+        
         # Adicionando os clientes em uma lista
         lista_clientes.append({
         'nome': nome_cliente,
@@ -41,12 +44,15 @@ def listando_clientes_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_f
         })
    
     nova_lista_empresa_fandi = lista_empresa_fandi.split(',')
+    nova_lista_cpfs_cnpj = cpfs_cnpjs.split("|")
     for posicao,cliente in enumerate(lista_clientes):
-
+            cliente['cpfs_cnpj'] = formatando_cpfs_cpns(nova_lista_cpfs_cnpj[posicao])
             cliente['Emp fandi'] = nova_lista_empresa_fandi[posicao]
             cliente['Valor total nf'] = df['Valor Total da Nota Fiscal'][index]
             cliente['Empresa'] = df['Empresa'][index]
             cliente['datas'] = df['Carimbo de data/hora'][index]
+            cliente['tipo_bonificao'] = df['Tipo de Bonificação'][index]
+             
     print('PROCESSO FINALIZADO!!!!')
     logging.info('PROCESSO FINALIZADO!!!!')
     return lista_clientes

@@ -1,6 +1,5 @@
 import logging
 import pyautogui as p
-import traceback
 import pyperclip as pyp
 from src.Model.global_utilitarios import glob_nomes_empresas_Delear
 
@@ -16,10 +15,8 @@ def glob_pesquisar_titulo_client(infor_cliente):
         DICIONARIO DE INFORMACOES DE CLIENTE
     """
     Nome_cliente = infor_cliente['nome']
-    id = infor_cliente['id_cliente']
+    # id = infor_cliente['id_cliente']
     img = 'C:/RPA/arquivos/images/'
-    print(Nome_cliente)
-    p.alert('ola')
     
     p.sleep(0.5)
     p.hotkey('alt','u') #acessando titulos
@@ -51,24 +48,73 @@ def glob_pesquisar_titulo_client(infor_cliente):
         p.press('Enter')
         
     p.sleep(1)
+    input_sacador = p.locateCenterOnScreen(f'{img}sacado.png', confidence=0.95)
+    if input_sacador != None:
+        c(input_sacador.x+80, input_sacador.y)
+        p.write("0048438")
+        p.press("Tab")
 
     ancora_endosado = p.locateCenterOnScreen(f'{img}endosado.png', confidence=0.95)
 
     if ancora_endosado != None:
-        c(ancora_endosado.x+25,ancora_endosado.y)
-        p.write(id)
+        c(ancora_endosado.x+80,ancora_endosado.y)
     else:
         logging.info("Erro na variavel ancora_endosado")
 
+    form_cpf = p.locateCenterOnScreen(f'{img}cpf.png', confidence=0.95)
+    
+    while form_cpf == None:
+        p.sleep(1)
+        form_cpf = p.locateCenterOnScreen(f'{img}cpf.png', confidence=0.95)
+    cpf = (infor_cliente['cpfs_cnpj'])
 
-    p.press('Tab')
+    if len(cpf) > 13:
+        CGC = p.locateCenterOnScreen(f'{img}cgc.png', confidence=0.95)
+        if CGC != None:
+            c(CGC.x+70, CGC.y)
+            p.press('end')
+            p.press("backspace", presses=3000)
+    else:
+        c(form_cpf.x+45, form_cpf.y)
+        p.press('backspace',presses=3000)
+    
+    cpf = str(cpf)
+    cpf = cpf.zfill(11)
+    p.write(cpf)
+    p.press('Enter')
+    p.sleep(4)
+    sem_dados2 = p.locateCenterOnScreen(f'{img}sem_dados_consulta.png', confidence=0.95)
+    if sem_dados2 != None:
+        print("CLIENTE NÃO ENCONTRADO")
+        logging.info("CLIENTE NÃO ENCONTRADO")
+        p.press('Enter')
+        p.sleep(2)
+        p.hotkey('alt','c')
+        p.sleep(2)
+        p.hotkey('alt','c')
+        fechar = p.locateCenterOnScreen(f'{img}fechar12.png', confidence=0.95)
+        if fechar != None:
+            c(fechar.x, fechar.y)
+        return 'n_encontrado',""
+
+    p.press('Enter')
     p.sleep(1)
-    if Nome_cliente == 'FRANCISCO HELIOMAR DE LIMA BERNARDO        ':
+    p.hotkey("ctrl",'c')
+    id_cliente = pyp.paste()
+    p.press('tab')
+    p.sleep(1)
+    tipo_bonificao =  infor_cliente['tipo_bonificao']
+    if tipo_bonificao == 'Plus Posterior (Bônus de Comissão)':
         p.write('PP')
         p.press('Tab')
         p.sleep(0.5)
-    else:
+    elif tipo_bonificao == "[Semanal] Plus Bancário - Retorno":
         p.write('PB')
+        p.press('Tab')
+        p.sleep(0.5)
+        
+    else:
+        p.write('SP')
         p.press('Tab')
         p.sleep(0.5)
 
@@ -78,6 +124,8 @@ def glob_pesquisar_titulo_client(infor_cliente):
     else:
         logging.info('Erro na variavel emAberto')
     p.sleep(1)
+    
+    
 
     #TODO NÃO EXCLUIR ESSA COMENTARIO
     # todos = p.locateCenterOnScreen(f'{img}todos_consulta_titulos.png', confidence=0.95)
@@ -116,7 +164,7 @@ def glob_pesquisar_titulo_client(infor_cliente):
                 p.sleep(1)
                 fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
         
-        return False
+        return False,""
     else:
         print("( OK ) TITULO ENCONTRADO ( OK )")
         logging.info("( OK ) TITULO ENCONTRADO ( OK )")
@@ -128,11 +176,11 @@ def glob_pesquisar_titulo_client(infor_cliente):
         p.press('Enter')
         p.sleep(1)
         p.sleep(1)
-        return True
+        return True,id_cliente
     
 
-if __name__ == '__main__':
-    p.sleep(2)
-    dados = {'nome': 'Paulo Roberto lima castelo ', 'valor': '1003.54', 'Emp fandi': 'NISSAN MATRIZ', 'Valor total nf': '6886.44', 'Empresa': 'NOVALUZ WS', 'datas': '20/01/2024 09:10:33', 'id_cliente': '0476729'}
-    
-    glob_pesquisar_titulo_client(dados)
+
+# p.sleep(2)
+# dados = {'nome': 'Paulo Roberto lima castelo ', 'valor': '1003.54', 'Emp fandi': 'NISSAN MATRIZ', 'Valor total nf': '6886.44', 'Empresa': 'NOVALUZ WS', 'datas': '20/01/2024 09:10:33', 'id_cliente': '0476729'}
+
+# glob_pesquisar_titulo_client(dados)

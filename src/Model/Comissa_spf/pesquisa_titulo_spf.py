@@ -21,7 +21,6 @@ def pesquisar_titulo_comissao_spf(infor_cliente):
     
     """
     Nome_cliente = infor_cliente['nome']
-    id = infor_cliente['id_cliente']
     img = 'C:/RPA/arquivos/images/'
     print(f'*PESQUISADO TITULO  DE { Nome_cliente }')   
     logging.info(f'*PESQUISADO TITULO  DE { Nome_cliente }')
@@ -57,30 +56,68 @@ def pesquisar_titulo_comissao_spf(infor_cliente):
         
     p.sleep(1)
  
-    ancora_endosado = p.locateCenterOnScreen(f'{img}endosado.png', confidence=0.95)
- 
-    if ancora_endosado != None:
-        c(ancora_endosado.x+25,ancora_endosado.y)
-        p.write(id)
-    else:
-        logging.info("  Erro na variavel ancora_endosado")
-
-
-    p.press('Tab')
     p.sleep(1)
+    input_sacador = p.locateCenterOnScreen(f'{img}sacado.png', confidence=0.95)
+    if input_sacador != None:
+        c(input_sacador.x+80, input_sacador.y)
+        p.write("0048438")
+        p.press("Tab")
 
+    ancora_endosado = p.locateCenterOnScreen(f'{img}endosado.png', confidence=0.95)
+
+    if ancora_endosado != None:
+        c(ancora_endosado.x+80,ancora_endosado.y)
+    else:
+        logging.info("Erro na variavel ancora_endosado")
+
+    form_cpf = p.locateCenterOnScreen(f'{img}cpf.png', confidence=0.95)
+    
+    while form_cpf == None:
+        p.sleep(1)
+        form_cpf = p.locateCenterOnScreen(f'{img}cpf.png', confidence=0.95)
+    cpf = (infor_cliente['cpfs_cnpj'])
+    c(form_cpf.x+45, form_cpf.y)
+    p.press('backspace',presses=3000)
+    
+    cpf = str(cpf)
+    cpf = cpf.zfill(11)
+    p.write(cpf)
+    p.press('Enter')
+    p.sleep(4)
+    p.alert('ola mundddooooo')
+    sem_dados2 = p.locateCenterOnScreen(f'{img}sem_dados_consulta.png', confidence=0.95)
+    if sem_dados2 != None:
+        print("CLIENTE NÃO ENCONTRADO")
+        logging.info("CLIENTE NÃO ENCONTRADO")
+        p.press('Enter')
+        p.sleep(2)
+        p.hotkey('alt','c')
+        p.sleep(2)
+        p.hotkey('alt','c')
+        fechar = p.locateCenterOnScreen(f'{img}fechar12.png', confidence=0.95)
+        if fechar != None:
+            c(fechar.x, fechar.y)
+            return 'n_encontrado',""
+
+    p.press('Enter')
+    p.sleep(1)
+    p.hotkey("Ctrl","c")
+    id_cliente = pyp.paste()
+    p.press('tab')
+    p.sleep(1)
+    
     p.write('SP')
     p.press('Tab')
-
     p.sleep(0.5)
 
     emAberto = p.locateCenterOnScreen(f'{img}em_aberto_liquidacao.png', confidence=0.95)
     if emAberto != None:
         c(emAberto.x,emAberto.y)
     else:
-        logging.info('    Erro na variavel emAberto')
+        logging.info('Erro na variavel emAberto')
     p.sleep(1)
 
+    
     # todos = p.locateCenterOnScreen(f'{img}todos_consulta_titulos.png', confidence=0.95)
     # if todos != None:
     #     c(todos.x, todos.y)
@@ -114,7 +151,7 @@ def pesquisar_titulo_comissao_spf(infor_cliente):
                 fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
         print("TITULO NÃO ENCONTRADO ")    
         logging.info("TITULO NÃO ENCONTRADO ")    
-        return False
+        return False,""
     
     else:
         print("TITULO ENCONTRADO COM SUCESSO!!")
@@ -132,7 +169,7 @@ def pesquisar_titulo_comissao_spf(infor_cliente):
         p.sleep(1)
         
         #     p.sleep(2)
-        return True
+        return True,id_cliente
     
 
 if __name__ == '__main__':

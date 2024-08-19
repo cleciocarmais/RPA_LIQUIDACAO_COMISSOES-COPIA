@@ -8,9 +8,9 @@ import logging
 from datetime import datetime
 from datetime import datetime
 import sys
-sys.path.append(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES')
+# sys.path.append(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\src\Model')
 from src.Model.global_utilitarios import escreva
-from src.Model.global_calculo_imposto import glob_calculo_valor
+from src.Model.   global_calculo_imposto import glob_calculo_valor
     
 chave_de_acesso_Email = open(r'C:\RPA\credenciais\credenciais_gmail.txt', 'r')
 chaves = chave_de_acesso_Email.readlines()

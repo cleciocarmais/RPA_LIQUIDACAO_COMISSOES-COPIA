@@ -45,7 +45,7 @@ def incluir_titulo_plus_bancario(id_cliente, valor):
         print("VALORES DIVERGENTE DE ENTRE PLANILHA E DEALAER")
         logging.info("VALORES DIVERGENTE DE ENTRE PLANILHA E DEALAER")
         
-        p.alert(f"valor dealer{valorDealer} \n valor cliente {valor}")
+       
         print(type(valor))
         print(type(valorDealer))
         fechar = p.locateCenterOnScreen(f'{img}fechar38.png',confidence=0.95)
@@ -131,7 +131,7 @@ def incluir_titulo_plus_bancario(id_cliente, valor):
     if voltar != None:
         c(voltar.x, voltar.y)
     p.sleep(1)
-    p.alert("conferir valores")
+   
     confirma = p.locateCenterOnScreen(f'{img}confirma_incluir_titulo.png', confidence=0.95)
     if confirma != None:
         c(confirma.x, confirma.y)

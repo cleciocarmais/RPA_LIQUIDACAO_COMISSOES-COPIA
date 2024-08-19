@@ -8,7 +8,8 @@ import logging
 from datetime import datetime
 from datetime import datetime
 import sys
-sys.path.append(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES')
+import os
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.Model.global_utilitarios import escreva
 from src.Model.global_calculo_imposto import glob_calculo_valor
     
@@ -31,8 +32,8 @@ def email_plus_bancario(informacoes):
     receiver = ('morgana.sousa@carmais.com.br,contasareceber_veiculos@carmais.com.br,daniel@carmais.com.br,fcoventura@carmais.com.br,alan.estevao@carmais.com.br')
     # receiver = ("francisco.clecio@carmais.com.br")
     body = ""
-    print("*ENVIANDO EMAIL DE CLIENTE NÃO ENCONTRADO*")
-    logging.info("*ENVIANDO EMAIL DE CLIENTE NÃO ENCONTRADO*")
+    print("ENVIANDO EMAIL DE PLUS BANCARIO ")
+    logging.info("ENVIANDO EMAIL DE PLUS BANCARIO ")
     mgs = MIMEMultipart('related')
     mgs['From'] = sender
     mgs['To'] = receiver
@@ -99,7 +100,7 @@ def email_plus_bancario(informacoes):
 #     'datas': '23/04/2024 17:29:42',
 #     'Status' : 'Liquidacão feita'}
 # ]
-# email_geral(dados)
+# email_plus_bancario(dados)
 
                     
 

@@ -22,6 +22,7 @@ def run_plus_posterior(df,i):
     p.sleep(1)
     valor_encontrado_plus_posterior = glob_pesquisa_valor_dealer(glob_contas_gerenciais[df['Empresa'][i]],df['Carimbo de data/hora'][i],df['Valor Total da Nota Fiscal'][i])
     p.sleep(1)
+    
     if valor_encontrado_plus_posterior:
         os.system('TASKKILL /PID scb.exe')
         #TODO EM FAZER DE TESTE AINDA ESPERANDO ALGUMAS INFORMAÇOES COMO TIPOP DE NS
@@ -48,6 +49,6 @@ def run_plus_posterior(df,i):
         p.sleep(1)
         envia_email_plus_posterior(informaçao)
         return True
-    # else:
-            
-    #     os.system('TASKKILL /PID scb.exe')
+    else:
+        print('valor n encontrado')
+        os.system('TASKKILL /PID scb.exe')

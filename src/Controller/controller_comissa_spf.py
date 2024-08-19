@@ -18,7 +18,7 @@ import pyautogui as p
 import os
 
 
-def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi):
+def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
     """
     passa algumentos respectivamente\n
     df = dataframe da planilha que esta lendo   \n 
@@ -39,28 +39,25 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi):
     p.sleep(1)
     muda_empresa(df['Empresa'][i])
     p.sleep(0.5)
+
     valor_encontrado_spf = pesquisar_valor_comissa_spf(glob_contas_gerenciais[df['Empresa'][i]], df['Carimbo de data/hora'][i],df['Valor Total da Nota Fiscal'][i])
- 
+    # valor_encontrado_spf = True
     if valor_encontrado_spf:
+        print("Valor Encontrando Comissao spf")
         p.sleep(1)
         os.system('TASKKILL /PID scb.exe')
 
-        LISTA_CLIENTES_SPF = salvando_nomes_clientes(df,i,lista_qtde_clientes,lista_empresa_fandi)
- 
+        LISTA_CLIENTES_SPF = salvando_nomes_clientes(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs)
+        print(LISTA_CLIENTES_SPF)
+      
         p.sleep(2)
         login_dealer_contas_receber()
         p.sleep(2)
         muda_empresa_contas_a_receber(df['Empresa'][i])
-    
-        clientes_cadastros_spf,clientes_n_cadastrados_spf = glob_consultar_situacao_cliente(LISTA_CLIENTES_SPF)
-        print(clientes_cadastros_spf)
-    
-    
-        for cliente_n_cadastro_spf in clientes_n_cadastrados_spf:
-            resultadosClientes.append(cliente_n_cadastro_spf)
+
         VALOR_NONTANTE = 0
 
-        for id, cliente_spf in enumerate(clientes_cadastros_spf):
+        for id, cliente_spf in enumerate(LISTA_CLIENTES_SPF):
             if id == 0:
                         flag = True
                         VALOR_NONTANTE = 0
@@ -70,8 +67,9 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi):
                 print(f"PESQUISANDO PELO TITULO de {cliente_spf['nome']} COMISSÃO SPF")
                 logging.info(f"PESQUISANDO PELO TITULO de {cliente_spf['nome']} COMISSÃO SPF")
                 resultado_pesquisa_spf = pesquisar_titulo_comissao_spf (cliente_spf)
+               
 
-                if resultado_pesquisa_spf:
+                if resultado_pesquisa_spf[0] == True:
                     #  p.alert('EMPRSA IGUAIS E TITULO ENCONTRADO')
                     
                     resultado_da_liquidaca_spf, valorSobras, valor_cliete = Liquidação_comissa_spf(cliente_spf,flag)
@@ -92,6 +90,21 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi):
                     fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
                     if fechar != None:
                         c(fechar.x, fechar.y)
+                elif resultado_pesquisa_spf[0] == "n_encontrado":
+                    VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])
+
+                    resultadosClientes.append( {
+                                'nome': cliente_spf['nome'],
+                                'valor': cliente_spf['valor'],
+                                'Emp fandi': cliente_spf['Emp fandi'],
+                                'Valor total nf': cliente_spf['Valor total nf'],
+                                'Empresa': cliente_spf['Empresa'],
+                                'datas': cliente_spf['datas'],
+                                'Status' : 'Cliente não Encontrado'})
+                    logging.info('Cliente não Encontrado')
+                    print('Cliente não Encontrado')
+
+
                     
                 else:
                     #TODO MANDA EMAIL A ALGUEM 
@@ -121,16 +134,17 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi):
 
                 print(f" PESQUISANDO PELO TITULO  COMISSAO SPF DIVERGENTE : {cliente_spf['nome']}")
                 logging.info(f"PESQUISANDO PELO TITULO COMISSAO SPF DIVERGENTE : {cliente_spf['nome']}")
-                resultado_pesquisa_spf = pesquisar_titulo_comissao_spf (cliente_spf)
+                resultado_pesquisa_spf,id_cliente = pesquisar_titulo_comissao_spf (cliente_spf)
                 # esultado_pesquisa_spf = True
-                if resultado_pesquisa_spf:
+                if resultado_pesquisa_spf[0] == True:
                     print('TITULO ENCONTRADO COMISSAO SPF DIVERGENTE' )
                     logging.info('TITULO ENCONTRADO COMISSAO SPF DIVERGENTE' )
                     
                   
                     # realizaLiquidacao(cliente_spf)
+               
                     p.sleep(1)
-                    lancamento_antigo_spf, lancamento_novo_spf = incluir_titulo_spf(cliente_spf['id_cliente'])
+                    lancamento_antigo_spf, lancamento_novo_spf = incluir_titulo_spf(id_cliente)
                     p.sleep(0.5)
                     print('INICIALIZANDO ANULACAO DE TITULO COMISSAO SPF')
                     logging.info('INICIALIZANDO ANULACAO DE TITULO COMISSAO SPF')
@@ -158,7 +172,21 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi):
                         if fechar != None:
                             c(fechar.x, fechar.y)
                             
+                elif resultado_pesquisa_spf[0] == 'n_encontrado':
+                    VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])
 
+                    resultadosClientes.append( {
+                                'nome': cliente_spf['nome'],
+                                'valor': cliente_spf['valor'],
+                                'Emp fandi': cliente_spf['Emp fandi'],
+                                'Valor total nf': cliente_spf['Valor total nf'],
+                                'Empresa': cliente_spf['Empresa'],
+                                'datas': cliente_spf['datas'],
+                                'Status' : 'Cliente não Encontrado'})
+                    logging.info('Cliente não Encontrado')
+                    print('Cliente não Encontrado')
+
+                    
                 else:
                     print(' SALVANDO CLIENTE SEM TITULO DE EMPRESA DIVERGENTE COMISSAO SPF')
                     VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])

@@ -1,7 +1,8 @@
 import pandas as pd
 import pyautogui as p
 import logging
-def salvando_nomes_clientes(df,index,lista_qtde_clientes,lista_empresa_fandi):
+from src.Model.global_utilitarios import formatando_cpfs_cpns
+def salvando_nomes_clientes(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpj):
     print("SALVANDO NOMES DE CLIENTES ")
     logging.info("SALVANDO NOMES DE CLIENTES ")
     print(lista_qtde_clientes)
@@ -25,12 +26,15 @@ def salvando_nomes_clientes(df,index,lista_qtde_clientes,lista_empresa_fandi):
         })
    
     nova_lista_empresa_fandi = lista_empresa_fandi.split(',')
+    cpf_cnpj = cpfs_cnpj.split("|")
     for posicao,cliente in enumerate(lista_clientes):
          
             cliente['Emp fandi'] = nova_lista_empresa_fandi[posicao]
+            cliente['cpfs_cnpj'] = formatando_cpfs_cpns(cpf_cnpj[posicao])
             cliente['Valor total nf'] = df['Valor Total da Nota Fiscal'][index]
             cliente['Empresa'] = df['Empresa'][index]
             cliente['datas'] = df['Carimbo de data/hora'][index]
+            cliente['tipo_bonificao'] = df['Tipo de Bonificação'][index]
     print('Processo finalizado!!!!')
     logging.info('Processo finalizado!!!!')
     return lista_clientes

@@ -20,7 +20,7 @@ import traceback
 
      
 
-def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi):
+def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj):
     try:
         resultadosClientes = []
         primeiro_cliente = False
@@ -39,25 +39,25 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi):
         
             os.system('TASKKILL /PID scb.exe')
             p.sleep(1)
-
-            lista_clientes_plus_bancario = listando_clientes_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi)
+    
+            lista_clientes_plus_bancario = listando_clientes_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
            
-
+           
+            
             login_dealer_contas_receber()
 
             p.sleep(2)
                     
-            clietes_cadastrados_plus_bancario,clientes_n_cadastrados_plus_bancario = glob_consultar_situacao_cliente(lista_clientes_plus_bancario)
         
-            for cliente_n_cadastrado_plus_bancario in clientes_n_cadastrados_plus_bancario:
-                resultadosClientes.append(cliente_n_cadastrado_plus_bancario)
-
             muda_empresa_contas_a_receber(df['Empresa'][index])
 
             print(3)
 
-            for id_cliente,cliente in enumerate(clietes_cadastrados_plus_bancario):
+            for id_cliente,cliente in enumerate(lista_clientes_plus_bancario):
                 print(4)
+                print(cliente['Emp fandi'])
+                print(df['Empresa'][index])
+             
                 if id_cliente == 0:
                             primeiro_cliente = True
 
@@ -69,7 +69,7 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi):
                     logging.info(f"PESQUISANDO PELO TITULO de {cliente['nome']}")
                     titulo_encontrado_plus_bancario = glob_pesquisar_titulo_client(cliente)
                    
-                    if titulo_encontrado_plus_bancario:
+                    if titulo_encontrado_plus_bancario[0] == True:
                 
 
                        
@@ -87,7 +87,7 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi):
                                     'Empresa': cliente['Empresa'],
                                     'datas': cliente['datas'],
                                     'Status' : 'Liquidacão feita'})
-                        if resultado_liquidaca_plus_bancario =='divergente':
+                        if resultado_liquidaca_plus_bancario == 'divergente':
                                 print("LIQUIDAÇÃA N REALIZADO POR VALOR DIVERGENTE")
                                 logging.info("LIQUIDAÇÃA N REALIZADO POR VALOR DIVERGENTE")
 
@@ -106,10 +106,10 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi):
                         fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
                         if fechar != None:
                             c(fechar.x, fechar.y)
-                    else:
+                    elif titulo_encontrado_plus_bancario[0] == 'n_encontrado':
                                 #TODO MANDA EMAIL A ALGUEM 
-                                print('LIQUIDACÃO NÃO REALIZADA POR CLIENTE SEM TITULO ')
-                                logging.info('LIQUIDACÃO NÃO REALIZADA POR CLIENTE SEM TITULO ')
+                                print('LIQUIDACAO NÃO REALIZADA,POIS CLIENTE N ENCONTRADO  ')
+                                logging.info('LIQUIDACAO NÃO REALIZADA,POIS CLIENTE N ENCONTRADO')
 
                                 resultadosClientes.append( {
                                             'nome': cliente['nome'],
@@ -118,28 +118,45 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi):
                                             'Valor total nf': cliente['Valor total nf'],
                                             'Empresa': cliente['Empresa'],
                                             'datas': cliente['datas'],
-                                            'Status' : 'Titulo não Encontrado'})
-                                logging.info('TITULO NÃO ENCONTRADO')
-                                print('TITULO NÃO ENCONTRADO')
+                                            'Status' : 'Cliente não Encontrado'})
+                                
                                 
                                 fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
                                 if fechar != None:
                                     c(fechar.x, fechar.y)
+                    else:
+                        print('LIQUIDACÃO NÃO REALIZADA, POIS CLIENTE SEM TITULO ')
+                        logging.info('LIQUIDACÃO NÃO REALIZADA, POIS CLIENTE SEM TITULO ')
+
+                        resultadosClientes.append( {
+                                        'nome': cliente['nome'],
+                                        'valor': cliente['valor'],
+                                        'Emp fandi': cliente['Emp fandi'],
+                                        'Valor total nf': cliente['Valor total nf'],
+                                        'Empresa': cliente['Empresa'],
+                                        'datas': cliente['datas'],
+                                        'Status' : 'Titulo não Encontrado'})
+                        logging.info('TITULO NÃO ENCONTRADO')
+                        print('TITULO NÃO ENCONTRADO')
+                            
+                        fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
+                        if fechar != None:
+                            c(fechar.x, fechar.y)
                 else:
                             
                             print('EMPRESA DIVERGENTE   ')
                             logging.info('EMPRESA DIVERGENTE   ')
                             print(f" PESQUISANDO PELO TITULO EMPRESA DIVERGENTE {cliente['nome']}")
                             logging.info(F"  PESQUISANDO PELO TITULO EMPRESE DIVERGENTE {cliente['nome']}")
-                            titulo_encontrado_plus_bancario_empresa_divergente = glob_pesquisar_titulo_client(cliente)
+                            titulo_encontrado_plus_bancario_empresa_divergente,id_cliente = glob_pesquisar_titulo_client(cliente)
                             # titulo_encontrado_plus_bancario_empresa_divergente = True
-                            if titulo_encontrado_plus_bancario_empresa_divergente:
+                            if titulo_encontrado_plus_bancario_empresa_divergente == True:
                                 print('EMPRESA DIVERGENTES, MAS TITULO ENCONTRADO')
                                 logging.info('EMPRESA DIVERGENTES, MAS TITULO ENCONTRADO')
                                 #TODO CHAMAR DUAS FUNCOES UMA PARA CRIAR UM NOVO TITULO E OUTRA PARA ANULAR O ANTIGO TITULO.
                                 # realizaLiquidacao(cliente)
                                 p.sleep(1)
-                                lancamento_antigo, lancamento_novo,resultado_valores= incluir_titulo_plus_bancario(cliente['id_cliente'],cliente['valor'])
+                                lancamento_antigo, lancamento_novo,resultado_valores= incluir_titulo_plus_bancario(id_cliente,cliente['valor'])
                                 p.sleep(0.5)
                                 if resultado_valores == 'divergente':
                                         
