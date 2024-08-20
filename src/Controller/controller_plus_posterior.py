@@ -25,7 +25,7 @@ def run_plus_posterior(df,i):
     
     if valor_encontrado_plus_posterior:
         os.system('TASKKILL /PID scb.exe')
-        #TODO EM FAZER DE TESTE AINDA ESPERANDO ALGUMAS INFORMAÇOES COMO TIPOP DE NS
+        print("VALOR ENCONTRADO COM SUCESSO")
         login_dealer_contas_receber()
         p.sleep(1)
         muda_empresa_contas_a_receber(df['Empresa'][i])

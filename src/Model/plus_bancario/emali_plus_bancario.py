@@ -37,7 +37,7 @@ def email_plus_bancario(informacoes):
     mgs = MIMEMultipart('related')
     mgs['From'] = sender
     mgs['To'] = receiver
-    mgs['Subject'] = f'RPA - LIQUIDAÇÃO DE COMISSÃO -  {data_atual} '
+    mgs['Subject'] = f'RPA - LIQUIDAÇÃO DE COMISSÃO - PLUS BANCARIO {data_atual} '
 
     mgsAlternativa = MIMEMultipart('alternative')
     mgs.attach(mgsAlternativa) 
