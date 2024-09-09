@@ -28,7 +28,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
     
     função retorna true quando for email for enviado 
     """
-    flag = False
+    flag = ""
 
     resultadosClientes  = []
 
@@ -59,8 +59,11 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
 
         for id, cliente_spf in enumerate(LISTA_CLIENTES_SPF):
             if id == 0:
+                        p.alert("zerando variavel")
                         flag = True
                         VALOR_NONTANTE = 0
+            else:
+                flag = False
 
             if cliente_spf['Emp fandi'] == df['Empresa'][i]:
 
@@ -136,7 +139,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                 logging.info(f"PESQUISANDO PELO TITULO COMISSAO SPF DIVERGENTE : {cliente_spf['nome']}")
                 resultado_pesquisa_spf,id_cliente = pesquisar_titulo_comissao_spf (cliente_spf)
                 # esultado_pesquisa_spf = True
-                if resultado_pesquisa_spf[0] == True:
+                if resultado_pesquisa_spf == True:
                     print('TITULO ENCONTRADO COMISSAO SPF DIVERGENTE' )
                     logging.info('TITULO ENCONTRADO COMISSAO SPF DIVERGENTE' )
                     
@@ -172,7 +175,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                         if fechar != None:
                             c(fechar.x, fechar.y)
                             
-                elif resultado_pesquisa_spf[0] == 'n_encontrado':
+                elif resultado_pesquisa_spf == 'n_encontrado':
                     VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])
 
                     resultadosClientes.append( {

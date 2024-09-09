@@ -83,8 +83,8 @@ def pesquisar_titulo_comissao_spf(infor_cliente):
     cpf = cpf.zfill(11)
     p.write(cpf)
     p.press('Enter')
-    p.sleep(4)
-    p.alert('ola mundddooooo')
+    p.sleep(5)
+ 
     sem_dados2 = p.locateCenterOnScreen(f'{img}sem_dados_consulta.png', confidence=0.95)
     if sem_dados2 != None:
         print("CLIENTE NÃO ENCONTRADO")

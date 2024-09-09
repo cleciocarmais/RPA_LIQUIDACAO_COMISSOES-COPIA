@@ -6,7 +6,7 @@ def salvando_nomes_clientes(df,index,lista_qtde_clientes,lista_empresa_fandi,cpf
     print("SALVANDO NOMES DE CLIENTES ")
     logging.info("SALVANDO NOMES DE CLIENTES ")
     print(lista_qtde_clientes)
-    p.alert("conferir")
+  
     print("Aguarde!!!")
     lista_clientes = []
     # Percorrendo cada linha da planilha
