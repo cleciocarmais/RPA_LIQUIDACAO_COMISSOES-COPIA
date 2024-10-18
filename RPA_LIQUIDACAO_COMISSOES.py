@@ -5,7 +5,7 @@ import gspread
 import pandas as pd
 import gspread_dataframe as gd
 import os
-2390603
+
 
 
 from src.Controller.controller_plus_bancario import run_plus_bancario

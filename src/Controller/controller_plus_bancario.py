@@ -31,8 +31,8 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
         print(f'INICIANDO {df["Empresa"][index]}')
         muda_empresa(df['Empresa'][index])
         p.sleep(1)
-        # valor_encontrado_plus_bancario = True
-        valor_encontrado_plus_bancario = glob_pesquisa_valor_dealer(glob_contas_gerenciais[df['Empresa'][index]],df['Carimbo de data/hora'][index],df['Valor Total da Nota Fiscal'][index])
+        valor_encontrado_plus_bancario = True
+        # valor_encontrado_plus_bancario = glob_pesquisa_valor_dealer(glob_contas_gerenciais[df['Empresa'][index]],df['Carimbo de data/hora'][index],df['Valor Total da Nota Fiscal'][index])
         if valor_encontrado_plus_bancario:
             print("VALOR ENCONTRADO!!")
             logging.info("VALOR ENCONTRADO!!")

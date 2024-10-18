@@ -32,6 +32,7 @@ def listando_clientes_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_f
     # Calculando o incio do for de clientes
     inicio = (10 - int(lista_qtde_clientes)) + 1
     # Percorrendo cada cliente
+    #TODO DESFAZER
     for j in range(inicio, 11):
         # Criando list_comprehensions para os clientes que existem
         nome_cliente = [str(x) for x in df[f'Nome do Cliente {j}']][index]
