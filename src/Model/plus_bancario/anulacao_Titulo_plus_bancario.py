@@ -75,6 +75,7 @@ def anulacao_titulo_plus_bancario(lancamento_antigo,lancameto_novo = None):
     p.write(f'ANULADO CONF LANC {lancameto_novo}')
     p.sleep(0.5)
     p.press("Tab")
+    p.press("Tab")
     p.write('AV.LANCTO')
     btn_ok02 = p.locateCenterOnScreen(f'{img}ok_fiat.png', confidence=0.95)
     if btn_ok02 !=None:

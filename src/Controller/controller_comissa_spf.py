@@ -12,6 +12,8 @@ from src.Model.Comissa_spf.nomes_clientesSPF import salvando_nomes_clientes
 from src.Model.global_Consulta_cadastro import glob_consultar_situacao_cliente
 from src.Model.global_clickApi import click2 as c
 from src.Model.Comissa_spf.emali_comissa_spf import email_comissa_spf
+from src.Model.DadosCliente import DestroyInfor,GetDadosCliente,SetDadosCliente
+from src.Model.token import GetToken, SetToken
 import logging
 import pandas as pd
 import pyautogui as p
@@ -31,17 +33,19 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
     flag = ""
 
     resultadosClientes  = []
-
+    DadosToken = GetToken()
     print('\nINCIANDO PROCESSO DE COMISSAO SPF')
     logging.info('\nINCIANDO PROCESSO DE COMISSAO SPF')
-    
-    login_dealer_controle_bancario()
-    p.sleep(1)
-    muda_empresa(df['Empresa'][i])
-    p.sleep(0.5)
-
-    valor_encontrado_spf = pesquisar_valor_comissa_spf(glob_contas_gerenciais[df['Empresa'][i]], df['Carimbo de data/hora'][i],df['Valor Total da Nota Fiscal'][i])
-    # valor_encontrado_spf = True
+    if DadosToken["valor"] != df['Valor Total da Nota Fiscal'][i]:
+        login_dealer_controle_bancario()
+        p.sleep(1)
+        muda_empresa(df['Empresa'][i])
+        p.sleep(0.5)
+        # valor_encontrado_spf = pesquisar_valor_comissa_spf(glob_contas_gerenciais[df['Empresa'][i]], df['Carimbo de data/hora'][i],df['Valor Total da Nota Fiscal'][i])
+        SetToken(valor=df['Valor Total da Nota Fiscal'][i])
+        valor_encontrado_spf = True
+    else:
+        valor_encontrado_spf = True
     if valor_encontrado_spf:
         print("Valor Encontrando Comissao spf")
         p.sleep(1)
@@ -58,6 +62,9 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
         VALOR_NONTANTE = 0
 
         for id, cliente_spf in enumerate(LISTA_CLIENTES_SPF):
+            if any(infor["nome"] == cliente_spf["nome"] for infor in GetDadosCliente()):
+                continue
+
             if id == 0:
                         p.alert("zerando variavel")
                         flag = True
@@ -80,7 +87,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                     if resultado_da_liquidaca_spf == True:
                         VALOR_NONTANTE = VALOR_NONTANTE + valorSobras
                         print("LIQUIDAÇÃO FEITA COMISSÃO SPF ")
-                        resultadosClientes.append(
+                        SetDadosCliente(
                             {
                                 'nome': cliente_spf['nome'],
                                 'valor': valor_cliete,
@@ -96,7 +103,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                 elif resultado_pesquisa_spf[0] == "n_encontrado":
                     VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])
 
-                    resultadosClientes.append( {
+                    SetDadosCliente( {
                                 'nome': cliente_spf['nome'],
                                 'valor': cliente_spf['valor'],
                                 'Emp fandi': cliente_spf['Emp fandi'],
@@ -114,7 +121,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                     print(' CLIENTE SEM TITULO COMISSÃO SPF ')
                     VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])
 
-                    resultadosClientes.append( {
+                    SetDadosCliente( {
                                 'nome': cliente_spf['nome'],
                                 'valor': cliente_spf['valor'],
                                 'Emp fandi': cliente_spf['Emp fandi'],
@@ -160,7 +167,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                         logging.info('SALVANDO LIQ COMISSAO SPF')
                         VALOR_NONTANTE = VALOR_NONTANTE + valorSobras
 
-                        resultadosClientes.append(
+                        SetDadosCliente(
                             {
                                 'nome': cliente_spf['nome'],
                                 'valor': valor_cliete,
@@ -178,7 +185,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                 elif resultado_pesquisa_spf == 'n_encontrado':
                     VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])
 
-                    resultadosClientes.append( {
+                    SetDadosCliente( {
                                 'nome': cliente_spf['nome'],
                                 'valor': cliente_spf['valor'],
                                 'Emp fandi': cliente_spf['Emp fandi'],
@@ -194,7 +201,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                     print(' SALVANDO CLIENTE SEM TITULO DE EMPRESA DIVERGENTE COMISSAO SPF')
                     VALOR_NONTANTE = VALOR_NONTANTE + float(cliente_spf['valor'])
 
-                    resultadosClientes.append({
+                    SetDadosCliente({
                         'nome': cliente_spf['nome'],
                             'valor': cliente_spf['valor'],
                             'Emp fandi': cliente_spf['Emp fandi'],
@@ -209,6 +216,6 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
             flag = False
             
 
-        if len(resultadosClientes) > 0:
-            email_comissa_spf(resultadosClientes, VALOR_NONTANTE)
+        if len(GetDadosCliente()) > 0:
+            email_comissa_spf(GetDadosCliente(), VALOR_NONTANTE)
         return True

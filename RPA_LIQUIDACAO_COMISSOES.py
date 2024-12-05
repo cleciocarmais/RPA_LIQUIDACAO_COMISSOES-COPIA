@@ -11,17 +11,17 @@ import os
 from src.Controller.controller_plus_bancario import run_plus_bancario
 from src.Controller.controller_plus_posterior import run_plus_posterior
 from src.Controller.controller_comissa_spf import run_comissao_Spf
-
+from src.Model.DadosCliente import DestroyInfor
 with open('C:/RPA/Credenciais/pid_bot_running.txt', 'r') as file:
     pid_bot_anterior = file.readlines()[0] # Lendo o conteudo do arquivo - Numero do processo do bot anterior
     os.system('taskkill /PID  ' + pid_bot_anterior +  '   /F') # Forcando o encerramento do bot anterior
 
 # Gravando o n�mero do processo do bot atual no arquivo pid_bot_running.txt
-with open('C:/RPA/Credenciais/pid_bot_running.txt', 'w') as file:
+with open('C:/RPA/Credenciais/pid_bot_running.txt', 'a') as file:
     file.write(str(os.getpid())) # sobrescrevendo o numero do PID
 
     
-with open(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', 'w') as f:
+with open(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', 'a') as f:
         pass
 
  
@@ -80,6 +80,8 @@ for linha in range(len(df.index)):
                 df.loc[linha, 'Liquidação'] = 'Feito'
                 df = df.astype(str)
                 gd.set_with_dataframe(work, df)
+        DestroyInfor()
+        
             
             
         os.system('TASKKILL /PID scb.exe')

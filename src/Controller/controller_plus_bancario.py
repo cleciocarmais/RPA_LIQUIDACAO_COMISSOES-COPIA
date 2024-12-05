@@ -16,6 +16,8 @@ import pandas as pd
 import pyautogui as p
 import os
 import traceback
+from src.Model.token import GetToken, SetToken
+from src.Model.DadosCliente import GetDadosCliente, SetDadosCliente
 
 
      
@@ -24,15 +26,21 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
     try:
         resultadosClientes = []
         primeiro_cliente = False
+        inforToken = GetToken()
         print("TIPO DE BONIFICAÇÃO : [Semanal] Plus Bancário - Retorno **")
         logging.info("TIPO DE BONIFICAÇÃO : [Semanal] Plus Bancário - Retorno**")
         p.sleep(1)
-        login_dealer_controle_bancario()
-        print(f'INICIANDO {df["Empresa"][index]}')
-        muda_empresa(df['Empresa'][index])
-        p.sleep(1)
-        valor_encontrado_plus_bancario = True
-        # valor_encontrado_plus_bancario = glob_pesquisa_valor_dealer(glob_contas_gerenciais[df['Empresa'][index]],df['Carimbo de data/hora'][index],df['Valor Total da Nota Fiscal'][index])
+        if inforToken["valor"] != df['Valor Total da Nota Fiscal'][index]:
+            login_dealer_controle_bancario()
+            print(f'INICIANDO {df["Empresa"][index]}')
+            muda_empresa(df['Empresa'][index])
+            p.sleep(1)
+            # valor_encontrado_plus_bancario = True
+            valor_encontrado_plus_bancario = glob_pesquisa_valor_dealer(glob_contas_gerenciais[df['Empresa'][index]],df['Carimbo de data/hora'][index],df['Valor Total da Nota Fiscal'][index])
+            SetToken(valor=df['Valor Total da Nota Fiscal'][index])
+        else:
+              valor_encontrado_plus_bancario = True
+        
         if valor_encontrado_plus_bancario:
             print("VALOR ENCONTRADO!!")
             logging.info("VALOR ENCONTRADO!!")
@@ -57,6 +65,10 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                 print(4)
                 print(cliente['Emp fandi'])
                 print(df['Empresa'][index])
+                if len(GetDadosCliente()) > 0:
+                      if any(DadosCliente["nome"] == cliente["nome"] for DadosCliente in GetDadosCliente()):
+                            p.alert("pulando usuario")
+                            continue
              
                 if id_cliente == 0:
                             primeiro_cliente = True
@@ -78,7 +90,7 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                         if resultado_liquidaca_plus_bancario == True:
                             print(" LIQUIDAÇÃO REALIZADA COM SUCESSO!!")
                             logging.info(" LIQUIDAÇÃO REALIZADA COM SUCESSO!!")
-                            resultadosClientes.append(
+                            SetDadosCliente(
                                 {
                                     'nome': cliente['nome'],
                                     'valor': cliente['valor'],
@@ -86,12 +98,12 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                                     'Valor total nf': cliente['Valor total nf'],
                                     'Empresa': cliente['Empresa'],
                                     'datas': cliente['datas'],
-                                    'Status' : 'Liquidacão feita'})
+                                    'Status' : 'Liquidacao feita'})
                         if resultado_liquidaca_plus_bancario == 'divergente':
                                 print("LIQUIDAÇÃA N REALIZADO POR VALOR DIVERGENTE")
                                 logging.info("LIQUIDAÇÃA N REALIZADO POR VALOR DIVERGENTE")
 
-                                resultadosClientes.append(
+                                SetDadosCliente(
                                 {
                                     'nome': cliente['nome'],
                                     'valor': cliente['valor'],
@@ -111,14 +123,14 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                                 print('LIQUIDACAO NÃO REALIZADA,POIS CLIENTE N ENCONTRADO  ')
                                 logging.info('LIQUIDACAO NÃO REALIZADA,POIS CLIENTE N ENCONTRADO')
 
-                                resultadosClientes.append( {
+                                SetDadosCliente( {
                                             'nome': cliente['nome'],
                                             'valor': cliente['valor'],
                                             'Emp fandi': cliente['Emp fandi'],
                                             'Valor total nf': cliente['Valor total nf'],
                                             'Empresa': cliente['Empresa'],
                                             'datas': cliente['datas'],
-                                            'Status' : 'Cliente não Encontrado'})
+                                            'Status' : 'Cliente nao Encontrado'})
                                 
                                 
                                 fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
@@ -128,14 +140,14 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                         print('LIQUIDACÃO NÃO REALIZADA, POIS CLIENTE SEM TITULO ')
                         logging.info('LIQUIDACÃO NÃO REALIZADA, POIS CLIENTE SEM TITULO ')
 
-                        resultadosClientes.append( {
+                        SetDadosCliente( {
                                         'nome': cliente['nome'],
                                         'valor': cliente['valor'],
                                         'Emp fandi': cliente['Emp fandi'],
                                         'Valor total nf': cliente['Valor total nf'],
                                         'Empresa': cliente['Empresa'],
                                         'datas': cliente['datas'],
-                                        'Status' : 'Titulo não Encontrado'})
+                                        'Status' : 'Titulo nao Encontrado'})
                         logging.info('TITULO NÃO ENCONTRADO')
                         print('TITULO NÃO ENCONTRADO')
                             
@@ -160,7 +172,7 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                                 p.sleep(0.5)
                                 if resultado_valores == 'divergente':
                                         
-                                        resultadosClientes.append(
+                                        SetDadosCliente(
                                         {
                                             'nome': cliente['nome'],
                                             'valor': cliente['valor'],
@@ -191,7 +203,7 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                                     print("LIQUIDAÇÃO REALIZADA COM SUCESSO DE EMPRESA DIVERGENTE")
                                     logging.info("LIQUIDAÇÃO REALIZADA COM SUCESSO DE EMPRESA DIVERGENTE")
 
-                                    resultadosClientes.append(
+                                    SetDadosCliente(
                                         {
                                             'nome': cliente['nome'],
                                             'valor': cliente['valor'],
@@ -199,7 +211,7 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                                             'Valor total nf': cliente['Valor total nf'],
                                             'Empresa': cliente['Empresa'],
                                             'datas': cliente['datas'],
-                                            'Status' : 'Liquidacão feita'})
+                                            'Status' : 'Liquidacao feita'})
                                     fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
                                     if fechar != None:
                                         c(fechar.x, fechar.y)
@@ -208,7 +220,7 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                                         print("LIQUIDAÇÃO NÃO REALIZA POR VALOR DIVERGEENTE")
                                         logging.info("LIQUIDAÇÃO NÃO REALIZA POR VALOR DIVERGEENTE")
 
-                                        resultadosClientes.append(
+                                        SetDadosCliente(
                                         {
                                             'nome': cliente['nome'],
                                             'valor': cliente['valor'],
@@ -221,14 +233,14 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
 
                             else:
                                 print('CLIENTE SEM TITULO ENCONCONTRA DE EMPRESA DIVERGENTE ')
-                                resultadosClientes.append({
+                                SetDadosCliente({
                                     'nome': cliente['nome'],
                                         'valor': cliente['valor'],
                                         'Emp fandi': cliente['Emp fandi'],
                                         'Valor total nf': cliente['Valor total nf'],
                                         'Empresa': cliente['Empresa'],
                                         'datas': cliente['datas'],
-                                        'Status' : 'Titulo não Encontrado'
+                                        'Status' : 'Titulo nao Encontrado'
                                 })
                                 fechar = p.locateCenterOnScreen('C:/RPA/arquivos/images/fechar12.png', confidence=0.95)
                                 if fechar != None:
@@ -253,8 +265,8 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
             os.system('TASKKILL /PID scb.exe')
             os.system('TASKKILL /PID scb.exe')
     
-            if len(resultadosClientes) > 0:
-                    email_plus_bancario(resultadosClientes)
+            if len(GetDadosCliente()) > 0:
+                    email_plus_bancario(GetDadosCliente())
                     resultadosClientes = []
                     return True
                     # df.loc[i, 'Liquidação'] = 'Feito'

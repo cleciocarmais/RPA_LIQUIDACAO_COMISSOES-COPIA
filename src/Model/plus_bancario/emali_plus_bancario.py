@@ -42,7 +42,7 @@ def email_plus_bancario(informacoes):
     mgsAlternativa = MIMEMultipart('alternative')
     mgs.attach(mgsAlternativa) 
     for dado in informacoes:
-        if dado['Status'] == 'Titulo não Encontrado' or dado['Status'] == 'Cliente não Encontrado' or dado['Status'] == 'Valor Divergente no Dealer':
+        if dado['Status'] == 'Titulo nao Encontrado' or dado['Status'] == 'Cliente nao Encontrado' or dado['Status'] == 'Valor Divergente no Dealer':
             nome =  f"❌ {dado['nome']}"
 
         else:

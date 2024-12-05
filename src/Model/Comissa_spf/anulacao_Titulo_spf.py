@@ -3,7 +3,7 @@ import logging
 # from clickApi import click2 as c
 from src.Model.global_clickApi import click2 as c
 
-def anulacao_titulo_spf(lancamento_antigo,lancameto_novo = None):
+def anulacao_titulo_spf(lancamento_antigo = "2390304",lancameto_novo = None):
     print("ANULAÇAO DE TITULO")
     logging.info('ANULACAO DE TITIULO')
     img = 'C:/RPA/arquivos/images/'
@@ -22,6 +22,7 @@ def anulacao_titulo_spf(lancamento_antigo,lancameto_novo = None):
     p.sleep(1)
     creditos_debitos = p.locateCenterOnScreen(f'{img}creditos_ou_debitos.png', confidence=0.95)
     while creditos_debitos == None:
+
         p.sleep(0.5)
         print('    carregando pagina titutos')
         creditos_debitos = p.locateCenterOnScreen(f'{img}creditos_ou_debitos.png', confidence=0.95)
@@ -75,11 +76,16 @@ def anulacao_titulo_spf(lancamento_antigo,lancameto_novo = None):
     p.press("tab")
     p.sleep(1)
     p.write(f'ANULADO CONF LANC {lancameto_novo}')
+ 
     p.sleep(0.5)
     p.press("Tab")
+    p.press("Tab")
+    
     p.write('AV.LANCTO')
+    p.sleep(1)
     btn_ok02 = p.locateCenterOnScreen(f'{img}ok_fiat.png', confidence=0.95)
     if btn_ok02 !=None:
+
         c(btn_ok02.x, btn_ok02.y)
     p.sleep(3)
 
@@ -96,3 +102,6 @@ def anulacao_titulo_spf(lancamento_antigo,lancameto_novo = None):
 
     
 
+if __name__=="__main__":
+    p.countdown(4)
+    anulacao_titulo_spf()

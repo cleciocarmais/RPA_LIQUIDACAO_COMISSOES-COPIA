@@ -11,9 +11,11 @@ from src.Model.global_calculo_imposto import glob_imposto_irrf
 from datetime import timedelta, datetime, date
 import traceback
 import pyperclip as pyp
+from src.Model.token import SetToken, GetToken
 numeroDocumentoControlado = 0
 
 def realizaLiquidacao_plus_bancario(pessoa,flag):
+
     """
       REALIZA IRRF E LIQUIDACAO 
     
@@ -36,6 +38,7 @@ def realizaLiquidacao_plus_bancario(pessoa,flag):
     """ 
     
     global numeroDocumentoControlado
+    infor = GetToken()
     if flag:
         numeroDocumentoControlado = 0
     try :
@@ -296,6 +299,7 @@ def realizaLiquidacao_plus_bancario(pessoa,flag):
             p.sleep(1)
             
             numeroDocumentoControlado = pyp.paste()
+            SetToken(lanc=numeroDocumentoControlado)
             print(numeroDocumentoControlado)
             p.press('Tab')
             p.sleep(1)
@@ -318,7 +322,7 @@ def realizaLiquidacao_plus_bancario(pessoa,flag):
             lancamento = p.locateCenterOnScreen(f'{img}Lancamento38.png', confidence=0.95)
             if lancamento != None:
                 c(lancamento.x+55, lancamento.y)
-                p.write(numeroDocumentoControlado)
+                p.write(infor["numero_lanc"])
                 p.press('Tab')
 
             btn_ok02 = p.locateCenterOnScreen(f'{img}ok_fiat.png', confidence=0.95)

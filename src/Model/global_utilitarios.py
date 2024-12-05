@@ -46,9 +46,9 @@ glob_nomes_empresas_Delear = {
 }
 
 def escreva(text):
-    if text == 'Titulo não Encontrado':
+    if text == 'Titulo nao Encontrado':
         return f'<b style="color: red;">{text}</b>'
-    elif text == 'Cliente não Encontrado':
+    elif text == 'Cliente nao Encontrado':
         return f'<b style="color: red;">{text}</b>'
     elif text == 'Valor Divergente no Dealer':
         return f'<b style="color: red;">{text}</b>'
