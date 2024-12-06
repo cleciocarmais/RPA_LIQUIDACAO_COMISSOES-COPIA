@@ -1,7 +1,7 @@
 import json
-
+import os
 def OPenJson():
-    with open("Cliente_feitos.json" , "r") as file:
+    with open(f"{os.getcwd()}\\Cliente_feitos.json" , "r") as file:
         informacao = json.load(file)
         file.close()
     return informacao
@@ -13,7 +13,7 @@ def GetDadosCliente():
 def SetDadosCliente(dados):
     infor = OPenJson()
     print(infor)
-    with open("Cliente_feitos.json", "w") as save:
+    with open(f"{os.getcwd()}\\Cliente_feitos.json", "w") as save:
         infor["dados"].append(dados)
         json.dump(infor, save, indent=4)
         save.close()
@@ -23,7 +23,7 @@ def DestroyInfor():
     print("ZERANDO DADOS DA LIQUIDACAO")
     
     print(infor)
-    with open("Cliente_feitos.json", "w") as save:
+    with open(f"{os.getcwd()}\\Cliente_feitos.json", "w") as save:
         infor["dados"] = []
         json.dump(infor, save, indent=4)
         save.close()
