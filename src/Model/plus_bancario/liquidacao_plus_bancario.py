@@ -40,6 +40,7 @@ def realizaLiquidacao_plus_bancario(pessoa,flag):
     global numeroDocumentoControlado
     infor = GetToken()
     if flag:
+
         numeroDocumentoControlado = 0
     try :
         print("REALIZANDO LIQUIDACAO PLUS BANCARIO")
@@ -259,7 +260,7 @@ def realizaLiquidacao_plus_bancario(pessoa,flag):
             p.press('Tab')
         p.sleep(1)
 
-        if numeroDocumentoControlado == 0:
+        if numeroDocumentoControlado == 0 and GetToken()["numero_lanc"] == 0:
             print('PRIMEIRA CONSULTA DO GRUPO')
             lancamento = p.locateCenterOnScreen(f'{img}Lancamento38.png', confidence=0.95)
             if lancamento != None:

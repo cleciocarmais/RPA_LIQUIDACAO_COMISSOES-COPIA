@@ -67,10 +67,11 @@ def run_plus_bancario(df,index,lista_qtde_clientes,lista_empresa_fandi,cpfsCnpj)
                 print(df['Empresa'][index])
                 if len(GetDadosCliente()) > 0:
                       if any(DadosCliente["nome"] == cliente["nome"] for DadosCliente in GetDadosCliente()):
-                            p.alert("pulando usuario")
+                       
                             continue
              
                 if id_cliente == 0:
+                            
                             primeiro_cliente = True
 
                 if cliente['Emp fandi'] == df['Empresa'][index]:

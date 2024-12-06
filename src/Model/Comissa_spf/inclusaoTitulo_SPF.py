@@ -13,7 +13,6 @@ def incluir_titulo_spf(id_cliente):
     print("aguarde!!!")
     p.hotkey('ctrl','c')
     id_lancamento_antigo = pyp.paste()
-    p.alert(id_lancamento_antigo)
     print(f'lancemento antigo {id_lancamento_antigo}')
     p.press('Tab')
     p.sleep(0.5)

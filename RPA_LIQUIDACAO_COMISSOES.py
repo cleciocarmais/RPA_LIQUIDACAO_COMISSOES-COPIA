@@ -12,6 +12,7 @@ from src.Controller.controller_plus_bancario import run_plus_bancario
 from src.Controller.controller_plus_posterior import run_plus_posterior
 from src.Controller.controller_comissa_spf import run_comissao_Spf
 from src.Model.DadosCliente import DestroyInfor
+from src.Model.token import resert
 with open('C:/RPA/Credenciais/pid_bot_running.txt', 'r') as file:
     pid_bot_anterior = file.readlines()[0] # Lendo o conteudo do arquivo - Numero do processo do bot anterior
     os.system('taskkill /PID  ' + pid_bot_anterior +  '   /F') # Forcando o encerramento do bot anterior
@@ -21,12 +22,16 @@ with open('C:/RPA/Credenciais/pid_bot_running.txt', 'a') as file:
     file.write(str(os.getpid())) # sobrescrevendo o numero do PID
 
     
-with open(r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', 'a') as f:
+with open(f'{os.getcwd()}\\log_RPA_LIQUIDACAO_COMISSOES.txt', 'a') as f:
         pass
 
+
+
  
-logging.basicConfig(filename=r'C:\RPA_O_MAIS_LINDO_DA_EQUIPE\RPA_LIQUIDACAO_COMISSOES-COPIA\log_RPA_LIQUIDACAO_COMISSOES.txt', level=logging.INFO, format=' %(asctime)s - %(levelname)s - %(message)s',
+ 
+logging.basicConfig(filename=f'{os.getcwd()}\\log_RPA_LIQUIDACAO_COMISSOES.txt', level=logging.INFO, format=' %(asctime)s - %(levelname)s - %(message)s',
         datefmt='%d/%m/%Y %I:%M:%S %p')
+#TODO RETIRA P.ALERT DO NUMERO ANTIGO DO LANCAMENTO 
 
 CHAVE_ACESSO = 'C:/RPA/Credenciais/service_account.json'
 print('Baixando dados da planilha')
@@ -81,6 +86,7 @@ for linha in range(len(df.index)):
                 df = df.astype(str)
                 gd.set_with_dataframe(work, df)
         DestroyInfor()
+        resert()
         
             
             

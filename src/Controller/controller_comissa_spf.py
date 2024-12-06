@@ -66,7 +66,7 @@ def run_comissao_Spf(df,i,lista_qtde_clientes,lista_empresa_fandi,cpfs_cnpjs):
                 continue
 
             if id == 0:
-                        p.alert("zerando variavel")
+                   
                         flag = True
                         VALOR_NONTANTE = 0
             else:

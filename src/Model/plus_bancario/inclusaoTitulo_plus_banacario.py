@@ -13,7 +13,6 @@ def incluir_titulo_plus_bancario(id_cliente, valor):
 
     p.hotkey('ctrl','c')
     id_lancamento_antigo = pyp.paste()
-    p.alert(id_lancamento_antigo)
     p.press('Tab')
     p.sleep(0.5)
     p.press('esc')
@@ -146,7 +145,7 @@ def incluir_titulo_plus_bancario(id_cliente, valor):
     id_lancamento_novo = pyp.paste()
       # id_lancamento_novo = '2636241'
     # id_lancamento_antigo = '454545'
-    p.alert('ola')
+    p.sleep(2)
     fechar = p.locateCenterOnScreen(f'{img}fechar.png', confidence=0.95)
     if fechar != None:
         c(fechar.x, fechar.y)

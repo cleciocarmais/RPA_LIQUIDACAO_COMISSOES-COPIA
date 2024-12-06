@@ -23,10 +23,7 @@ def Liquidação_comissa_spf(pessoa,flag):
         global numeroDocumentoControlado
         global valorSobras
         if flag:
-            p.alert(numeroDocumentoControlado)
             numeroDocumentoControlado = 0
-            SetToken(lanc=0)
-            p.alert(numeroDocumentoControlado)
         p.sleep(2)
         valor_cliente= pessoa['valor']
         valor_nf = pessoa['Valor total nf']

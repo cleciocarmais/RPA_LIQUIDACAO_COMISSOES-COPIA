@@ -15,7 +15,12 @@ def SetToken(valor = None, lanc = None):
         if lanc != None:
             dados["numero_lanc"] = lanc
         json.dump(dados, file, indent=4)
-
+def resert():
+    dados =  GetToken()
+    with open("token.json", "w") as file:
+            dados["valor"] = 0
+            dados["numero_lanc"] = 0
+            json.dump(dados, file, indent=4)
         
 
 
